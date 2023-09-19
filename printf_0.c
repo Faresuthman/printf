@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <stdarg.h>
+#include <unistd.h>
 #include "main.h"
 
 /**
@@ -10,10 +10,10 @@
  */
 int _printf(const char *format, ...)
 {
-    int count = 0;
-    va_list args;
+    int count = 0;  // To keep track of the number of characters printed
+    va_list args;   // A list to hold the variable arguments
 
-    va_start(args, format);
+    va_start(args, format);  // Initialize the argument list
 
     while (format && *format)
     {
@@ -26,38 +26,47 @@ int _printf(const char *format, ...)
 
             if (*format == 'c')
             {
+                // Handle character specifier
                 int c = va_arg(args, int);
-                putchar(c);
+                write(1, &c, 1); // Write the character to stdout
                 count++;
             }
             else if (*format == 's')
             {
+                // Handle string specifier
                 char *s = va_arg(args, char *);
                 if (s)
                 {
-                    while (*s)
-                    {
-                        putchar(*s);
-                        count++;
-                        s++;
-                    }
+                    int len = 0;
+                    while (s[len])
+                        len++;
+                    write(1, s, len); // Write the string to stdout
+                    count += len;
+                }
+                else
+                {
+                    // Handle NULL string
+                    write(1, "(null)", 6);
+                    count += 6;
                 }
             }
             else if (*format == '%')
             {
-                putchar('%');
+                // Handle '%' specifier
+                write(1, "%", 1); // Write '%' to stdout
                 count++;
             }
         }
         else
         {
-            putchar(*format);
+            // Normal character, not a specifier
+            write(1, format, 1); // Write the character to stdout
             count++;
         }
-        format++;
+        format++; // Move to the next character in the format string
     }
 
-    va_end(args);
-    return count;
+    va_end(args); // Clean up the argument list
+    return count; // Return the total number of characters printed
 }
 
