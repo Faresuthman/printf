@@ -4,7 +4,7 @@
  * get_size - Calculates the size to cast the argument
  * @i: List of arguments to print
  * @format: Formatted string in which to print the arguments
- * 
+ *
  *
  *
  * Return: Precision.
